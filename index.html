@@ -1,0 +1,89 @@
+cat > /mnt/user-data/outputs/english-pop-app.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>WordUp! 英語学習</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7F6F3;--card:#fff;--card2:#F0EEE9;--bdr:#E2DDD6;
+  --txt:#1A1814;--dim:#8A8478;
+  --grn:#58CC02;--grnbg:#D7F0B8;--grnd:#46a800;
+  --red:#FF4B4B;--redbg:#FFE0E0;--redd:#c40000;
+  --blu:#1CB0F6;--blubg:#D7F1FD;--blud:#0a8bc4;
+  --gld:#FF9600;--gldd:#cc7800;
+  --pur:#CE82FF;--purd:#a853e0;
+  --R:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);overflow-x:hidden;min-height:100vh}
+
+/* ── TOP BAR ── */
+#topbar{position:sticky;top:0;z-index:200;background:var(--card);border-bottom:2px solid var(--bdr);height:54px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.logo{font-family:'DM Serif Display';font-size:1.25rem;letter-spacing:-.4px}.logo b{color:var(--grn)}
+.tstats{display:flex;gap:7px}
+.tstat{display:flex;align-items:center;gap:4px;background:var(--card2);border:1.5px solid var(--bdr);border-radius:50px;padding:4px 11px;font-size:.82rem;font-weight:700}
+#t-hearts{color:var(--red)}#t-streak{color:var(--gld)}#t-gems{color:var(--blu)}
+
+/* ── XP ── */
+#xprow{background:var(--card);border-bottom:2px solid var(--bdr);padding:7px 14px;display:flex;align-items:center;gap:10px}
+#xp-lv{font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);white-space:nowrap}
+#xp-bg{flex:1;height:10px;background:var(--card2);border-radius:50px;overflow:hidden;border:1.5px solid var(--bdr)}
+#xp-fill{height:100%;background:linear-gradient(90deg,var(--grn),#89E219);border-radius:50px;width:0%;transition:width .5s cubic-bezier(.34,1.56,.64,1)}
+#xp-num{font-size:.72rem;font-weight:700;color:var(--dim);white-space:nowrap}
+
+/* ── NAV ── */
+#navbar{display:flex;background:var(--card);border-bottom:2px solid var(--bdr);overflow-x:auto;scrollbar-width:none;position:sticky;top:54px;z-index:190}
+#navbar::-webkit-scrollbar{display:none}
+.navbtn{flex:1;min-width:70px;padding:11px 4px 9px;border:none;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:'DM Sans';font-size:.68rem;font-weight:700;color:var(--dim);border-bottom:3px solid transparent;transition:color .15s,border-color .15s}
+.navbtn .ico{font-size:1.35rem}
+.navbtn.active{color:var(--grn);border-bottom-color:var(--grn)}
+
+/* ── PAGES ── */
+#main{max-width:580px;margin:0 auto;padding:14px 12px 130px}
+.page{display:none}.page.show{display:block;animation:fadein .2s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══ COURSE MAP ══ */
+.unit-section{margin-bottom:28px}
+.unit-header{
+  border-radius:16px;padding:16px 18px;margin-bottom:0;
+  display:flex;align-items:center;gap:14px;position:relative;
+}
+.unit-header.locked{opacity:.5}
+.unit-header .uh-icon{font-size:2rem;background:rgba(255,255,255,.25);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.unit-header .uh-title{font-family:'DM Serif Display';font-size:1.1rem;color:#fff;margin-bottom:2px}
+.unit-header .uh-sub{font-size:.78rem;color:rgba(255,255,255,.85)}
+.unit-header .uh-badge{position:absolute;top:12px;right:14px;background:rgba(0,0,0,.2);color:#fff;font-size:.7rem;font-weight:800;border-radius:50px;padding:3px 10px}
+
+/* lesson path */
+.lesson-path{
+  display:flex;flex-direction:column;align-items:center;gap:0;
+  padding:10px 0 4px;
+  position:relative;
+}
+.lesson-path::before{
+  content:'';position:absolute;top:0;bottom:0;left:50%;width:3px;
+  background:var(--bdr);transform:translateX(-50%);z-index:0;
+}
+.lesson-node{
+  position:relative;z-index:1;margin:8px 0;
+  display:flex;flex-direction:column;align-items:center;
+}
+/* alternate left/right */
+.lesson-node:nth-child(odd) { margin-left: -80px; }
+.lesson-node:nth-child(even){ margin-left:  80px; }
+
+.lesson-btn{
+  width:64px;height:64px;border-radius:50%;border:none;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-size:1.5rem;font-weight:800;position:relative;
+  transition:transform .12s,box-shadow .12s;
+}
+.lesson-btn:active{transform:scale(.93)}
+.lesson-btn.done{background:var(--grn);box-shadow:0 5px 0 var(--grnd);color:#fff}
+.lesson-btn.current{background:var(--blu);box-shadow:0 5px 0 var(--blud);color:#fff;animation:bounce-current 1.8s ease infinite}
+.lesson-btn.locked{background:var(--card2);box-shadow:0 4px 0 var(--bdr);color:var(--dim);cursor:not-allowed}
+.lesson-btn.boss{background:linear-gradient(135deg,var(--gld),#FFB800);box-shadow:0 5px 0 var(--gldd);color:#f
